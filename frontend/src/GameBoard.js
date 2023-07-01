@@ -223,6 +223,14 @@ function GameBoard() {
     setShowModal(false);
   };
 
+  // ゲームをリセットするボタン
+  const handleClickReset = () => {
+    const confirmed = window.confirm('本当にゲームをリセットしますか？');
+    if (confirmed) {
+      window.location.reload();
+    }
+  }
+
   const isBoardFull = () => {
     return boardState.every(row => row.every(cell => cell !== null));
   };
@@ -264,7 +272,7 @@ function GameBoard() {
   return (
     <div className="game-board-outer">
       <div className='title'>Glass Ciela</div>
-      <div className='question'>
+      <div className='center'>
         <img src={iconQuestion} alt='question' onClick={handleClickQuestion} className='img_question'></img>
         {showModal && (
           <div className="modal-overlay">
@@ -355,6 +363,7 @@ function GameBoard() {
           </div>
         </div>
       </div>
+      <button onClick={handleClickReset} className='btn_reset'>RESET</button>
     </div>
   );
 };

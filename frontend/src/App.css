@@ -10,8 +10,7 @@
   text-align: center;
 }
 
-.question {
-  width: 100%;
+.center {
   text-align: center;
 }
 .img_question {
@@ -133,6 +132,30 @@
 .selected {
   background-color: #696969;
   border-radius: 50%;
+}
+
+.btn_reset {
+  display: block;
+  margin: 50px auto;
+  line-height: 1.5;
+  padding: 3px 20px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  text-align: center;
+  vertical-align: middle;
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  color: #212529;
+  border-radius: 0.5rem;
+}
+.btn_reset:hover {
+  -webkit-transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 @media screen and (min-width: 481px) {

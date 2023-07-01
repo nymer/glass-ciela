@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
+
 import BoardCell from './components/BoardCell';
+import ToggleSwitchButton from './components/ToggleSwitchButton'
+
 import RED from './images/icon_star_red.png';
 import GREEN from './images/icon_star_green.png';
 import YELLOW from './images/icon_star_yellow.png';
@@ -14,6 +17,7 @@ function GameBoard() {
   const [boardState, setBoardState] = useState(Array(7).fill().map(() => Array(7).fill(null)));
   const [currentPlayer, setCurrentPlayer] = useState(playerX);
   const [winner, setWinner] = useState(null);
+  const [isToggle, setIsToggle] = useState(false);
 
   // PlayerXのデータ
   const [pieceRed_X, countPieceRed_X] = useState(7);
@@ -25,6 +29,32 @@ function GameBoard() {
   const [pieceGreen_Y, countPieceGreen_Y] = useState(5);
   const [pieceYellow_Y, countPieceYellow_Y] = useState(5);
   const [chosenPiece_Y, setChosenPiece_Y] = useState(null);
+
+  // スタンダードモードへ変更するトグルボタンイベント
+  const handleClickStd = () => {
+    if ((!isToggle && pieceRed_X === 7 && pieceGreen_X === 5 && pieceYellow_X === 5 && pieceRed_Y === 7 && pieceGreen_Y === 5 && pieceYellow_Y === 5) || (isToggle && pieceRed_X === 6 && pieceGreen_X === 5 && pieceYellow_X === 5 && pieceRed_Y === 6 && pieceGreen_Y === 5 && pieceYellow_Y === 5)) {
+      // トグルボタンが切り替わった後に初期値を再設定
+      if (!isToggle) {
+        countPieceRed_X(6);
+        countPieceRed_Y(6);
+        const newBoardState = boardState.map(row => [...row]);
+        newBoardState[2][2] = <img src={RED} alt='set piece' className='img_piece'></img>;
+        newBoardState[5][3] = <img src={RED} alt='set piece' className='img_piece'></img>;
+        setBoardState(newBoardState);
+      } else if (isToggle) {
+        countPieceRed_X(7);
+        countPieceRed_Y(7);
+        const newBoardState = boardState.map(row => [...row]);
+        newBoardState[2][2] = null;
+        newBoardState[5][3] = null;
+        setBoardState(newBoardState);
+      };
+      setIsToggle(!isToggle);
+    } else {
+      window.alert('盤面に駒がある状態では切り替えられません。');
+      return;
+    };
+  };
 
   useEffect(() => {
     // 勝利条件の確認と判定
@@ -160,7 +190,7 @@ function GameBoard() {
     const elements = document.getElementsByClassName('img_piece');
     for (let i = 0; i < elements.length; i++) {
       const element = elements[i];
-        element.classList.remove('selected');
+      element.classList.remove('selected');
     }
   }
 
@@ -271,6 +301,9 @@ function GameBoard() {
 
   return (
     <div className="game-board-outer">
+      <div >
+        <ToggleSwitchButton className="toggle-switch-button" handleClick={handleClickStd} isToggle={isToggle} />
+      </div>
       <div className='title'>Glass Ciela</div>
       <div className='center'>
         <img src={iconQuestion} alt='question' onClick={handleClickQuestion} className='img_question'></img>
@@ -297,9 +330,10 @@ function GameBoard() {
             <p className='piece-count'>{pieceRed_X}　</p>
             <button className='btn_piece' onClick={(event) => {
               // クリックされた要素にClassNameを追加
-              if(currentPlayer === playerX) setClassNameToSelectedPiece(event);
+              if (currentPlayer === playerX) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
-              onMyPieceClick(playerX, RED)}}>
+              onMyPieceClick(playerX, RED)
+            }}>
               <img src={RED} alt='RED' className='img_piece'></img>
             </button>
           </div>
@@ -307,9 +341,10 @@ function GameBoard() {
             <p className='piece-count'>{pieceGreen_X}　</p>
             <button className='btn_piece' onClick={(event) => {
               // クリックされた要素にClassNameを追加
-              if(currentPlayer === playerX) setClassNameToSelectedPiece(event);
+              if (currentPlayer === playerX) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
-              onMyPieceClick(playerX, GREEN)}}>
+              onMyPieceClick(playerX, GREEN)
+            }}>
               <img src={GREEN} alt='GREEN' className='img_piece'></img>
             </button>
           </div>
@@ -317,9 +352,10 @@ function GameBoard() {
             <p className='piece-count'>{pieceYellow_X}　</p>
             <button className='btn_piece' onClick={(event) => {
               // クリックされた要素にClassNameを追加
-              if(currentPlayer === playerX) setClassNameToSelectedPiece(event);
+              if (currentPlayer === playerX) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
-              onMyPieceClick(playerX, YELLOW)}}>
+              onMyPieceClick(playerX, YELLOW)
+            }}>
               <img src={YELLOW} alt='YELLOW' className='img_piece'></img>
             </button>
           </div>
@@ -333,7 +369,7 @@ function GameBoard() {
           <div className="piece-color-count">
             <button className='btn_piece' onClick={(event) => {
               // クリックされた要素にClassNameを追加
-              if(currentPlayer === playerY) setClassNameToSelectedPiece(event);
+              if (currentPlayer === playerY) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
               onMyPieceClick(playerY, RED);
             }}><img src={RED} alt='RED' className='img_piece'></img></button>
@@ -342,7 +378,7 @@ function GameBoard() {
           <div className="green piece-color-count">
             <button className='btn_piece' onClick={(event) => {
               // クリックされた要素にClassNameを追加
-              if(currentPlayer === playerY) setClassNameToSelectedPiece(event);
+              if (currentPlayer === playerY) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
               onMyPieceClick(playerY, GREEN)
             }}>
@@ -353,7 +389,7 @@ function GameBoard() {
           <div className="yellow piece-color-count">
             <button className='btn_piece' onClick={(event) => {
               // クリックされた要素にClassNameを追加
-              if(currentPlayer === playerY) setClassNameToSelectedPiece(event);
+              if (currentPlayer === playerY) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
               onMyPieceClick(playerY, YELLOW)
             }}>

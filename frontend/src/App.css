@@ -1,0 +1,177 @@
+* {
+  font-family: '游明朝', sans-serif;
+}
+
+.title {
+  width: 100%;
+  font-size: 60px;
+  font-weight: 500;
+  margin: 30px 0 0 0;
+  text-align: center;
+}
+
+.question {
+  width: 100%;
+  text-align: center;
+}
+.img_question {
+  width: 20px;
+}
+/* questionのモーダル用 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  min-width: 300px;
+  max-width: 400px;
+}
+
+/* 上部のメッセージ */
+.message {
+  margin-bottom: 20px;
+}
+/* 角の3マスに対してクリックイベントを無効化 */
+.corner-cell {
+  pointer-events: none;
+  background-color: #e9e9e9;
+  /* 角の3マスの背景色を変更 */
+  border: none;
+}
+
+.game-board-outer {
+  height: 100vh;
+  width: 100vw;
+}
+
+.game-board-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 50px 5px 0 5px;
+}
+
+.status {
+  margin-bottom: 20px;
+}
+
+.board-row {
+  display: flex;
+}
+
+.board-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+/* セルがクリックされたときのスタイル */
+.board-cell:hover {
+  background-color: #f5f5f5;
+}
+
+.player_name {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+/* 色の設定 */
+.piece-color-count {
+  display: table;
+  height: 35px;
+  width: 60px;
+  margin-bottom: 13px;
+}
+.piece-color-count-left {
+  text-align: right;
+}
+.piece-count {
+  display: inline;
+  color: black;
+  font-size: 15px;
+  vertical-align: middle;
+}
+
+.btn_piece {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  appearance: none;
+  vertical-align: middle;
+}
+
+.img_piece {
+  width: 23px;
+}
+.img_piece:hover {
+  width: 30px;
+}
+
+.selected {
+  background-color: #696969;
+  border-radius: 50%;
+}
+
+@media screen and (min-width: 481px) {
+	.board-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    font-size: 24px;
+  }
+  .game-board {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+  }
+  .player_name {
+    font-size: 30px;
+    margin-bottom: 30px;
+  }
+  .piece-color-count {
+    display: table;
+    height: 50px;
+    width: 80px;
+    margin-bottom: 5px;
+  }
+  .piece-count {
+    display: inline;
+    color: black;
+    font-size: 20px;
+    vertical-align: middle;
+  }
+  .img_piece {
+    width: 35px;
+  }
+  .img_piece:hover {
+    width: 37px;
+  }
+}

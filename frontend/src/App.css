@@ -28,7 +28,9 @@
   justify-content: center;
   align-items: center;
 }
-
+.img_piece_description {
+  width: 1em;
+}
 /* スタンダードモードのトグルボタン */
 .toggle-switch-button {
   display: flex;

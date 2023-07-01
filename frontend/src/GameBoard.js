@@ -27,8 +27,9 @@ function GameBoard() {
   const [chosenPiece_Y, setChosenPiece_Y] = useState(null);
 
   useEffect(() => {
+    // 勝利条件の確認と判定
+    // 3つ同じ駒が並んだ時
     const winningConditions = getWinningConditions();
-
     for (let i = 0; i < winningConditions.length; i++) {
       const [a, b, c] = winningConditions[i];
       if (
@@ -39,6 +40,18 @@ function GameBoard() {
         setWinner(currentPlayer === playerX ? playerY : playerX);
         return;
       }
+    }
+    // 双方が駒を使い切った時
+    if (
+      pieceRed_X === 0 &&
+      pieceGreen_X === 0 &&
+      pieceYellow_X === 0 &&
+      pieceRed_Y === 0 &&
+      pieceGreen_Y === 0 &&
+      pieceYellow_Y === 0
+    ) {
+      setWinner(currentPlayer === playerX ? playerY : playerX);
+      return;
     }
 
     if (isBoardFull()) {
@@ -151,6 +164,7 @@ function GameBoard() {
     }
   }
 
+  // 勝利条件の定義（3つ同じ駒が並んだ時）
   const getWinningConditions = () => {
     const conditions = [];
 

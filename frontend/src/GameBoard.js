@@ -192,7 +192,11 @@ function GameBoard() {
   // 駒をクリックした時にわかりやすくCSSを付与する
   const setClassNameToSelectedPiece = (event) => {
     const clickedElement = event.target;
-    // 勝敗が決まった時はクリックできない
+    // 同一の駒をクリックした場合は処理をスキップする。
+    // const src = clickedElement.src;
+    // if (currentPlayer === playerX && chosenPiece_X === src) return;
+    // if (currentPlayer === playerY && chosenPiece_Y === src) return;
+    // 勝敗が決まった時はクリックできないようにする
     if (winner !== null) return;
     // クリックされた要素以外の要素からClassNameを削除
     deleteClassNameToSelectedPiece();

@@ -8,7 +8,7 @@ import RED from './images/icon_star_red.png';
 import GREEN from './images/icon_star_green.png';
 import YELLOW from './images/icon_star_yellow.png';
 import iconQuestion from './images/question.png';
-import iconRevert from './images/revert.png';
+import iconRevert from './images/icon_revert.png';
 
 // 固定値の定義
 const playerX = 'X';
@@ -281,6 +281,10 @@ function GameBoard() {
       window.alert('二手連続で戻すことはできません。');
       return;
     }
+    // 盤面が初期表示の場合は戻せない
+    if ((currentPlayer === playerX && !isToggle && pieceRed_Y === 7 && pieceGreen_Y === 5 && pieceYellow_Y === 5) || (currentPlayer === playerX && isToggle && pieceRed_Y === 6 && pieceGreen_Y === 5 && pieceYellow_Y === 5)) {
+      return;
+    }
 
     const confirmed = window.confirm('１手戻しますか？');
     if (confirmed) {
@@ -311,6 +315,8 @@ function GameBoard() {
       // 一手前の保存値をnullに変更
       setBeforeSetPiece(0, 0, null, null);
       console.log(beforeSetPiece);
+      // 全ての駒の選択時CSSを削除
+      deleteClassNameToSelectedPiece();
     }
   }
 
@@ -368,7 +374,7 @@ function GameBoard() {
                 <p>2人対戦用のボードゲームです。</p>
                 <p>Playerは交互に<br />赤・緑・黄のいずれかの駒を<br />選択して盤面に配置します。</p>
                 <p>相手が駒を配置する前であれば<br />
-                <img src={iconRevert} alt='iconRevert' className='img_piece_description'></img>で自分の配置した駒を<br />一手戻すことができます。</p>
+                  <img src={iconRevert} alt='iconRevert' className='img_piece_description'></img>で自分の配置した駒を<br />一手戻すことができます。</p>
                 <h2>勝利条件</h2>
                 <p>①<br />3目並べの要領で<br />同じ色の駒の3つ目を<br />置いた方の勝利です。</p>
                 <p>②<br />全ての駒を使い切った場合<br />後攻の勝利となります。</p>
@@ -389,7 +395,8 @@ function GameBoard() {
               // 選択した駒を手元にセット
               onMyPieceClick(playerX, RED)
             }}>
-              <img src={RED} alt='RED' className='img_piece'></img>
+              <img src={RED} alt='RED'
+                className={currentPlayer === playerX ? 'img_piece img_piece_selected' : 'img_piece'}></img>
             </button>
           </div>
           <div className="green piece-color-count piece-color-count-left">
@@ -400,7 +407,8 @@ function GameBoard() {
               // 選択した駒を手元にセット
               onMyPieceClick(playerX, GREEN)
             }}>
-              <img src={GREEN} alt='GREEN' className='img_piece'></img>
+              <img src={GREEN} alt='GREEN'
+                className={currentPlayer === playerX ? 'img_piece img_piece_selected' : 'img_piece'}></img>
             </button>
           </div>
           <div className="yellow piece-color-count piece-color-count-left">
@@ -411,7 +419,8 @@ function GameBoard() {
               // 選択した駒を手元にセット
               onMyPieceClick(playerX, YELLOW)
             }}>
-              <img src={YELLOW} alt='YELLOW' className='img_piece'></img>
+              <img src={YELLOW} alt='YELLOW'
+                className={currentPlayer === playerX ? 'img_piece img_piece_selected' : 'img_piece'}></img>
             </button>
           </div>
           <div className="revert piece-color-count piece-color-count-left">
@@ -434,7 +443,8 @@ function GameBoard() {
               if (currentPlayer === playerY) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
               onMyPieceClick(playerY, RED);
-            }}><img src={RED} alt='RED' className='img_piece'></img></button>
+            }}><img src={RED} alt='RED'
+              className={currentPlayer === playerY ? 'img_piece img_piece_selected' : 'img_piece'}></img></button>
             <p className='piece-count'>　{pieceRed_Y}</p>
           </div>
           <div className="green piece-color-count">
@@ -444,7 +454,8 @@ function GameBoard() {
               // 選択した駒を手元にセット
               onMyPieceClick(playerY, GREEN)
             }}>
-              <img src={GREEN} alt='GREEN' className='img_piece'></img>
+              <img src={GREEN} alt='GREEN'
+                className={currentPlayer === playerY ? 'img_piece img_piece_selected' : 'img_piece'}></img>
             </button>
             <p className='piece-count'>　{pieceGreen_Y}</p>
           </div>
@@ -455,7 +466,8 @@ function GameBoard() {
               // 選択した駒を手元にセット
               onMyPieceClick(playerY, YELLOW)
             }}>
-              <img src={YELLOW} alt='YELLOW' className='img_piece'></img>
+              <img src={YELLOW} alt='YELLOW'
+                className={currentPlayer === playerY ? 'img_piece img_piece_selected' : 'img_piece'}></img>
             </button>
             <p className='piece-count'>　{pieceYellow_Y}</p>
           </div>

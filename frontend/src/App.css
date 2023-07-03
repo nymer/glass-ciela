@@ -146,7 +146,7 @@
 .img_piece {
   width: 23px;
 }
-.img_piece:hover {
+.img_piece_selected {
   width: 30px;
 }
 
@@ -168,7 +168,6 @@
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
   text-align: center;
-  vertical-align: middle;
   text-decoration: none;
   letter-spacing: 0.1em;
   color: #212529;
@@ -215,7 +214,7 @@
   .img_piece {
     width: 35px;
   }
-  .img_piece:hover {
+  .img_piece_selected:hover {
     width: 37px;
   }
 }

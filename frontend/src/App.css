@@ -146,7 +146,7 @@
 .img_piece {
   width: 23px;
 }
-.img_piece_selected {
+.img_piece_selected:hover {
   width: 30px;
 }
 

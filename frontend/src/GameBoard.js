@@ -21,6 +21,8 @@ function GameBoard() {
   const [isToggle, setIsToggle] = useState(false);
   // 一手前の手を保存。row,column,user,pieceColor
   const [beforeSetPiece, setBeforeSetPiece] = useState([null, null, null, null]);
+  // 戻るボタンを使用したという情報を保存
+  const [revertUser, setRevertUser] = useState(null);
 
   // PlayerXのデータ
   const [pieceRed_X, countPieceRed_X] = useState(7);
@@ -137,6 +139,7 @@ function GameBoard() {
       setChosenPiece_X(null);
       setChosenPiece_Y(null);
       deleteClassNameToSelectedPiece();
+      setRevertUser(null);
     }
   };
 
@@ -270,6 +273,10 @@ function GameBoard() {
 
   // １手戻す処理
   const handleClickRevert = (player) => {
+    // 盤面が初期表示の場合は戻せない
+    if ((currentPlayer === playerX && !isToggle && pieceRed_Y === 7 && pieceGreen_Y === 5 && pieceYellow_Y === 5) || (currentPlayer === playerX && isToggle && pieceRed_Y === 6 && pieceGreen_Y === 5 && pieceYellow_Y === 5)) {
+      return;
+    }
     // 回数切れの時はクリック不可
     if (player === playerY && revertCount_Y === 0) {
       return;
@@ -277,16 +284,20 @@ function GameBoard() {
       return;
     }
     // 二手連続で戻すことはできない。
-    if (beforeSetPiece[0] === undefined) {
+    if (currentPlayer === revertUser && currentPlayer === player && beforeSetPiece[0] === undefined) {
       window.alert('二手連続で戻すことはできません。');
       return;
     }
-    // 盤面が初期表示の場合は戻せない
-    if ((currentPlayer === playerX && !isToggle && pieceRed_Y === 7 && pieceGreen_Y === 5 && pieceYellow_Y === 5) || (currentPlayer === playerX && isToggle && pieceRed_Y === 6 && pieceGreen_Y === 5 && pieceYellow_Y === 5)) {
+    // 相手が戻した直後は戻せない
+    if (beforeSetPiece[0] === undefined) {
+      return;
+    }
+    // 相手ターンの時は戻せない
+    if (currentPlayer === player) {
       return;
     }
 
-    const confirmed = window.confirm('１手戻しますか？');
+    const confirmed = window.confirm('一手戻しますか？');
     if (confirmed) {
       const newBoardState = boardState.map(row => [...row]);
       newBoardState[beforeSetPiece[0]][beforeSetPiece[1]] = null;
@@ -310,13 +321,15 @@ function GameBoard() {
         }
         setRevertCount_Y(revertCount_Y - 1)
       }
-      // プレイヤー交代
-      setCurrentPlayer(currentPlayer === playerX ? playerY : playerX);
       // 一手前の保存値をnullに変更
       setBeforeSetPiece(0, 0, null, null);
       console.log(beforeSetPiece);
       // 全ての駒の選択時CSSを削除
       deleteClassNameToSelectedPiece();
+      // 戻したプレイヤーを保存
+      setRevertUser(player);
+      // プレイヤー交代
+      setCurrentPlayer(currentPlayer === playerX ? playerY : playerX);
     }
   }
 
@@ -376,7 +389,7 @@ function GameBoard() {
                 <p>相手が駒を配置する前であれば<br />
                   <img src={iconRevert} alt='iconRevert' className='img_piece_description'></img>で自分の配置した駒を<br />一手戻すことができます。</p>
                 <h2>勝利条件</h2>
-                <p>①<br />3目並べの要領で<br />同じ色の駒の3つ目を<br />置いた方の勝利です。</p>
+                <p>①<br />三目並べの要領で<br />同じ色の駒の3つ目を<br />置いた方の勝利です。</p>
                 <p>②<br />全ての駒を使い切った場合<br />後攻の勝利となります。</p>
                 <button onClick={handleCloseModal}>閉じる</button>
               </div>
@@ -425,9 +438,7 @@ function GameBoard() {
           </div>
           <div className="revert piece-color-count piece-color-count-left">
             <p className='piece-count'>{revertCount_X}　</p>
-            <button className='btn_piece' onClick={(event) => {
-              if (currentPlayer === playerY) handleClickRevert(playerX);
-            }}>
+            <button className='btn_piece' onClick={(event) => {handleClickRevert(playerX)}}>
               <img src={iconRevert} alt='iconRevert' className='img_piece'></img>
             </button>
           </div>        </div>
@@ -472,9 +483,7 @@ function GameBoard() {
             <p className='piece-count'>　{pieceYellow_Y}</p>
           </div>
           <div className="revert piece-color-count">
-            <button className='btn_piece' onClick={(event) => {
-              if (currentPlayer === playerX) handleClickRevert(playerY);
-            }}>
+            <button className='btn_piece' onClick={(event) => {handleClickRevert(playerY)}}>
               <img src={iconRevert} alt='iconRevert' className='img_piece'></img>
             </button>
             <p className='piece-count'>　{revertCount_Y}</p>

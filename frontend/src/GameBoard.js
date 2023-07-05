@@ -41,27 +41,37 @@ function GameBoard() {
   const handleClickStd = () => {
     if ((!isToggle && pieceRed_X === 7 && pieceGreen_X === 5 && pieceYellow_X === 5 && pieceRed_Y === 7 && pieceGreen_Y === 5 && pieceYellow_Y === 5) || (isToggle && pieceRed_X === 6 && pieceGreen_X === 5 && pieceYellow_X === 5 && pieceRed_Y === 6 && pieceGreen_Y === 5 && pieceYellow_Y === 5)) {
       // トグルボタンが切り替わった後に初期値を再設定
+      const newBoardState = boardState.map(row => [...row]);
       if (!isToggle) {
         countPieceRed_X(6);
         countPieceRed_Y(6);
-        const newBoardState = boardState.map(row => [...row]);
         newBoardState[2][2] = <img src={RED} alt='set piece' className='img_piece'></img>;
         newBoardState[5][3] = <img src={RED} alt='set piece' className='img_piece'></img>;
         setBoardState(newBoardState);
-      } else if (isToggle) {
+      } else {
         countPieceRed_X(7);
         countPieceRed_Y(7);
-        const newBoardState = boardState.map(row => [...row]);
         newBoardState[2][2] = null;
         newBoardState[5][3] = null;
         setBoardState(newBoardState);
       };
+      setStartPieceCount();
       setIsToggle(!isToggle);
     } else {
       window.alert('盤面に駒がある状態では切り替えられません。');
       return;
     };
   };
+
+  // 駒のCountをリセット
+  const setStartPieceCount = () => {
+    countPieceGreen_X(5);
+    countPieceYellow_X(5);
+    setRevertCount_X(2);
+    countPieceGreen_Y(5);
+    countPieceYellow_Y(5);
+    setRevertCount_Y(2);
+  }
 
   useEffect(() => {
     // 勝利条件の確認と判定
@@ -274,8 +284,23 @@ function GameBoard() {
   // ゲームをリセットするボタン
   const handleClickReset = () => {
     const confirmed = window.confirm('本当にゲームをリセットしますか？');
-    if (confirmed) {
-      window.location.reload();
+    resetBoard(confirmed);
+  }
+  const resetBoard = (boolean) => {
+    if (boolean) {
+      const newBoardState = Array(7).fill(null).map(() => Array(7).fill(null));
+      if (isToggle) {
+        newBoardState[2][2] = <img src={RED} alt='set piece' className='img_piece'></img>;
+        newBoardState[5][3] = <img src={RED} alt='set piece' className='img_piece'></img>;
+        countPieceRed_X(6);
+        countPieceRed_Y(6);
+      } else {
+        countPieceRed_X(7);
+        countPieceRed_Y(7);
+      }
+      setBoardState(newBoardState);
+      setStartPieceCount();
+      setCurrentPlayer('X');
     }
   }
 

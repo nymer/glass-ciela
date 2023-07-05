@@ -13,9 +13,11 @@
 .center {
   text-align: center;
 }
+
 .img_question {
   width: 20px;
 }
+
 /* questionのモーダル用 */
 .modal-overlay {
   position: fixed;
@@ -28,9 +30,11 @@
   justify-content: center;
   align-items: center;
 }
+
 .img_piece_description {
   width: 1em;
 }
+
 /* スタンダードモードのトグルボタン */
 .toggle-switch-button {
   display: flex;
@@ -38,13 +42,16 @@
   justify-content: flex-end;
   margin: 8px 8px auto;
 }
+
 .std-mode-text {
   margin: auto 5px;
 }
+
 .std-mode-btn {
   width: 80px;
   border: 3px dotted #000;
 }
+
 .btn-mode {
   text-align: right;
   height: 100%;
@@ -62,6 +69,7 @@
 .message {
   margin-bottom: 20px;
 }
+
 /* 角の3マスに対してクリックイベントを無効化 */
 .corner-cell {
   pointer-events: none;
@@ -116,6 +124,7 @@
   font-size: 20px;
   margin-bottom: 20px;
 }
+
 /* 色の設定 */
 .piece-color-count {
   display: table;
@@ -123,9 +132,11 @@
   width: 60px;
   margin-bottom: 13px;
 }
+
 .piece-color-count-left {
   text-align: right;
 }
+
 .piece-count {
   display: inline;
   color: black;
@@ -133,7 +144,7 @@
   vertical-align: middle;
 }
 
-.btn_piece {
+.img_piece {
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -142,11 +153,9 @@
   appearance: none;
   vertical-align: middle;
   height: 23px;
-}
-
-.img_piece {
   width: 23px;
 }
+
 .img_piece_selected:hover {
   width: 30px;
 }
@@ -174,13 +183,14 @@
   color: #212529;
   border-radius: 0.5rem;
 }
+
 .btn_reset:hover {
   -webkit-transform: scale(1.05);
   transform: scale(1.05);
 }
 
 @media screen and (min-width: 481px) {
-	.board-cell {
+  .board-cell {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -190,34 +200,38 @@
     cursor: pointer;
     font-size: 24px;
   }
+
   .game-board {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 20px;
   }
+
   .player_name {
     font-size: 30px;
     margin-bottom: 30px;
   }
+
   .piece-color-count {
     display: table;
     height: 50px;
     width: 80px;
     margin-bottom: 5px;
   }
+
   .piece-count {
     display: inline;
     color: black;
     font-size: 20px;
     vertical-align: middle;
   }
-  .btn_piece {
-    height: 35px;
-  }
+
   .img_piece {
+    height: 35px;
     width: 35px;
   }
+
   .img_piece_selected:hover {
     width: 37px;
   }

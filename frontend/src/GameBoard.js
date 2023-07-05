@@ -435,45 +435,37 @@ function GameBoard() {
           <div className="player_name player-X">{playerX}</div>
           <div className="piece-color-count piece-color-count-left">
             <p className='piece-count'>{pieceRed_X}　</p>
-            <button className='btn_piece' onClick={(event) => {
+            <img src={RED} alt='RED' onClick={(event) => {
               // クリックされた要素にClassNameを追加
               if (currentPlayer === playerX) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
               onMyPieceClick(playerX, RED)
-            }}>
-              <img src={RED} alt='RED'
-                className={(currentPlayer === playerX && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img>
-            </button>
+            }}
+              className={(currentPlayer === playerX && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img>
           </div>
           <div className="green piece-color-count piece-color-count-left">
             <p className='piece-count'>{pieceGreen_X}　</p>
-            <button className='btn_piece' onClick={(event) => {
+            <img src={GREEN} alt='GREEN' onClick={(event) => {
               // クリックされた要素にClassNameを追加
               if (currentPlayer === playerX) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
               onMyPieceClick(playerX, GREEN)
-            }}>
-              <img src={GREEN} alt='GREEN'
-                className={(currentPlayer === playerX && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img>
-            </button>
+            }}
+              className={(currentPlayer === playerX && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img>
           </div>
           <div className="yellow piece-color-count piece-color-count-left">
             <p className='piece-count'>{pieceYellow_X}　</p>
-            <button className='btn_piece' onClick={(event) => {
+            <img src={YELLOW} alt='YELLOW' onClick={(event) => {
               // クリックされた要素にClassNameを追加
               if (currentPlayer === playerX) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
               onMyPieceClick(playerX, YELLOW)
-            }}>
-              <img src={YELLOW} alt='YELLOW'
-                className={(currentPlayer === playerX && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img>
-            </button>
+            }}
+              className={(currentPlayer === playerX && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img>
           </div>
           <div className="revert piece-color-count piece-color-count-left">
             <p className='piece-count'>{revertCount_X}　</p>
-            <button className='btn_piece' onClick={(event) => { if (winner === null) { handleClickRevert(playerX) } }}>
-              <img src={iconRevert} alt='iconRevert' className='img_piece'></img>
-            </button>
+            <img src={iconRevert} alt='iconRevert' className='img_piece' onClick={(event) => { if (winner === null) { handleClickRevert(playerX) } }}></img>
           </div>        </div>
         <div className="game-board">
           {renderMessage()}
@@ -482,43 +474,37 @@ function GameBoard() {
         <div className="game-board">
           <div className="player_name player-Y">{playerY}</div>
           <div className="piece-color-count">
-            <button className='btn_piece' onClick={(event) => {
+            <img src={RED} alt='RED' onClick={(event) => {
               // クリックされた要素にClassNameを追加
               if (currentPlayer === playerY) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
               onMyPieceClick(playerY, RED);
-            }}><img src={RED} alt='RED'
-              className={(currentPlayer === playerY && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img></button>
+            }}
+              className={(currentPlayer === playerY && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img>
             <p className='piece-count'>　{pieceRed_Y}</p>
           </div>
           <div className="green piece-color-count">
-            <button className='btn_piece' onClick={(event) => {
+            <img src={GREEN} alt='GREEN' onClick={(event) => {
               // クリックされた要素にClassNameを追加
               if (currentPlayer === playerY) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
               onMyPieceClick(playerY, GREEN)
-            }}>
-              <img src={GREEN} alt='GREEN'
-                className={(currentPlayer === playerY && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img>
-            </button>
+            }}
+              className={(currentPlayer === playerY && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img>
             <p className='piece-count'>　{pieceGreen_Y}</p>
           </div>
           <div className="yellow piece-color-count">
-            <button className='btn_piece' onClick={(event) => {
+            <img src={YELLOW} alt='YELLOW' onClick={(event) => {
               // クリックされた要素にClassNameを追加
               if (currentPlayer === playerY) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
               onMyPieceClick(playerY, YELLOW)
-            }}>
-              <img src={YELLOW} alt='YELLOW'
-                className={(currentPlayer === playerY && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img>
-            </button>
+            }}
+              className={(currentPlayer === playerY && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img>
             <p className='piece-count'>　{pieceYellow_Y}</p>
           </div>
           <div className="revert piece-color-count">
-            <button className='btn_piece' onClick={(event) => { if (winner === null) { handleClickRevert(playerY) } }}>
-              <img src={iconRevert} alt='iconRevert' className='img_piece'></img>
-            </button>
+            <img src={iconRevert} alt='iconRevert' className='img_piece' onClick={(event) => { if (winner === null) { handleClickRevert(playerY) } }}></img>
             <p className='piece-count'>　{revertCount_Y}</p>
           </div>
         </div>

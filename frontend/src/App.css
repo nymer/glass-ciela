@@ -157,6 +157,7 @@
 }
 
 .img_piece_selected:hover {
+  height: 30px;
   width: 30px;
 }
 
@@ -233,6 +234,7 @@
   }
 
   .img_piece_selected:hover {
+    height: 37px;
     width: 37px;
   }
 }

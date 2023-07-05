@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 import BoardCell from './components/BoardCell';
@@ -8,6 +8,7 @@ import RED from './images/icon_star_red.png';
 import GREEN from './images/icon_star_green.png';
 import YELLOW from './images/icon_star_yellow.png';
 import iconQuestion from './images/question.png';
+import iconRevert from './images/icon_revert.png';
 
 // 固定値の定義
 const playerX = 'X';
@@ -18,43 +19,59 @@ function GameBoard() {
   const [currentPlayer, setCurrentPlayer] = useState(playerX);
   const [winner, setWinner] = useState(null);
   const [isToggle, setIsToggle] = useState(false);
+  // 一手前の手を保存。row,column,user,pieceColor
+  const [beforeSetPiece, setBeforeSetPiece] = useState([null, null, null, null]);
+  // 戻るボタンを使用したという情報を保存
+  const [revertUser, setRevertUser] = useState(null);
 
   // PlayerXのデータ
   const [pieceRed_X, countPieceRed_X] = useState(7);
   const [pieceGreen_X, countPieceGreen_X] = useState(5);
   const [pieceYellow_X, countPieceYellow_X] = useState(5);
+  const [revertCount_X, setRevertCount_X] = useState(2);
   const [chosenPiece_X, setChosenPiece_X] = useState(null);
   // PlayerYのデータ
   const [pieceRed_Y, countPieceRed_Y] = useState(7);
   const [pieceGreen_Y, countPieceGreen_Y] = useState(5);
   const [pieceYellow_Y, countPieceYellow_Y] = useState(5);
+  const [revertCount_Y, setRevertCount_Y] = useState(2);
   const [chosenPiece_Y, setChosenPiece_Y] = useState(null);
 
   // スタンダードモードへ変更するトグルボタンイベント
   const handleClickStd = () => {
     if ((!isToggle && pieceRed_X === 7 && pieceGreen_X === 5 && pieceYellow_X === 5 && pieceRed_Y === 7 && pieceGreen_Y === 5 && pieceYellow_Y === 5) || (isToggle && pieceRed_X === 6 && pieceGreen_X === 5 && pieceYellow_X === 5 && pieceRed_Y === 6 && pieceGreen_Y === 5 && pieceYellow_Y === 5)) {
       // トグルボタンが切り替わった後に初期値を再設定
+      const newBoardState = boardState.map(row => [...row]);
       if (!isToggle) {
         countPieceRed_X(6);
         countPieceRed_Y(6);
-        const newBoardState = boardState.map(row => [...row]);
         newBoardState[2][2] = <img src={RED} alt='set piece' className='img_piece'></img>;
         newBoardState[5][3] = <img src={RED} alt='set piece' className='img_piece'></img>;
         setBoardState(newBoardState);
-      } else if (isToggle) {
+      } else {
         countPieceRed_X(7);
         countPieceRed_Y(7);
-        const newBoardState = boardState.map(row => [...row]);
         newBoardState[2][2] = null;
         newBoardState[5][3] = null;
         setBoardState(newBoardState);
       };
+      setStartPieceCount();
       setIsToggle(!isToggle);
     } else {
       window.alert('盤面に駒がある状態では切り替えられません。');
       return;
     };
   };
+
+  // 駒のCountをリセット
+  const setStartPieceCount = () => {
+    countPieceGreen_X(5);
+    countPieceYellow_X(5);
+    setRevertCount_X(2);
+    countPieceGreen_Y(5);
+    countPieceYellow_Y(5);
+    setRevertCount_Y(2);
+  }
 
   useEffect(() => {
     // 勝利条件の確認と判定
@@ -106,6 +123,8 @@ function GameBoard() {
       const newBoardState = boardState.map(row => [...row]);
       newBoardState[row][col] = <img src={chosenPiece} alt='set piece' className='img_piece'></img>;
       setBoardState(newBoardState);
+      // 今回の手を保存
+      setBeforeSetPiece([row, col, currentPlayer, chosenPiece]);
       // プレイヤー交代
       setCurrentPlayer(currentPlayer === playerX ? playerY : playerX);
       // 使用した駒のマイナスカウント
@@ -130,6 +149,7 @@ function GameBoard() {
       setChosenPiece_X(null);
       setChosenPiece_Y(null);
       deleteClassNameToSelectedPiece();
+      setRevertUser(null);
     }
   };
 
@@ -151,6 +171,8 @@ function GameBoard() {
 
   // 自分の手持ち駒をクリックした時の処理
   const onMyPieceClick = (player, pieceColor) => {
+    // 勝敗が決まった時はクリックできない
+    if (winner !== null) return;
     if (player !== currentPlayer) return;
     if (player === playerX) {
       // 選択した駒の残り個数が0の時は選択できないようにする
@@ -180,6 +202,12 @@ function GameBoard() {
   // 駒をクリックした時にわかりやすくCSSを付与する
   const setClassNameToSelectedPiece = (event) => {
     const clickedElement = event.target;
+    // 同一の駒をクリックした場合は処理をスキップする。
+    // const src = clickedElement.src;
+    // if (currentPlayer === playerX && chosenPiece_X === src) return;
+    // if (currentPlayer === playerY && chosenPiece_Y === src) return;
+    // 勝敗が決まった時はクリックできないようにする
+    if (winner !== null) return;
     // クリックされた要素以外の要素からClassNameを削除
     deleteClassNameToSelectedPiece();
     // クリックされた要素にClassNameを追加
@@ -256,8 +284,85 @@ function GameBoard() {
   // ゲームをリセットするボタン
   const handleClickReset = () => {
     const confirmed = window.confirm('本当にゲームをリセットしますか？');
+    resetBoard(confirmed);
+  }
+  const resetBoard = (boolean) => {
+    if (boolean) {
+      const newBoardState = Array(7).fill(null).map(() => Array(7).fill(null));
+      if (isToggle) {
+        newBoardState[2][2] = <img src={RED} alt='set piece' className='img_piece'></img>;
+        newBoardState[5][3] = <img src={RED} alt='set piece' className='img_piece'></img>;
+        countPieceRed_X(6);
+        countPieceRed_Y(6);
+      } else {
+        countPieceRed_X(7);
+        countPieceRed_Y(7);
+      }
+      setBoardState(newBoardState);
+      setStartPieceCount();
+      setCurrentPlayer('X');
+    }
+  }
+
+  // １手戻す処理
+  const handleClickRevert = (player) => {
+    // 盤面が初期表示の場合は戻せない
+    if ((currentPlayer === playerX && !isToggle && pieceRed_Y === 7 && pieceGreen_Y === 5 && pieceYellow_Y === 5) || (currentPlayer === playerX && isToggle && pieceRed_Y === 6 && pieceGreen_Y === 5 && pieceYellow_Y === 5)) {
+      return;
+    }
+    // 回数切れの時はクリック不可
+    if (player === playerY && revertCount_Y === 0) {
+      return;
+    } else if (player === playerX && revertCount_X === 0) {
+      return;
+    }
+    // 二手連続で戻すことはできない。
+    if (currentPlayer === revertUser && currentPlayer === player && beforeSetPiece[0] === undefined) {
+      window.alert('二手連続で戻すことはできません。');
+      return;
+    }
+    // 相手が戻した直後は戻せない
+    if (beforeSetPiece[0] === undefined) {
+      return;
+    }
+    // 相手ターンの時は戻せない
+    if (currentPlayer === player) {
+      return;
+    }
+
+    const confirmed = window.confirm('一手戻しますか？');
     if (confirmed) {
-      window.location.reload();
+      const newBoardState = boardState.map(row => [...row]);
+      newBoardState[beforeSetPiece[0]][beforeSetPiece[1]] = null;
+      setBoardState(newBoardState);
+      if (beforeSetPiece[2] === playerX) {
+        if (beforeSetPiece[3] === RED) {
+          countPieceRed_X(pieceRed_X + 1);
+        } else if (beforeSetPiece[3] === GREEN) {
+          countPieceGreen_X(pieceGreen_X + 1);
+        } else if (beforeSetPiece[3] === YELLOW) {
+          countPieceYellow_X(pieceYellow_X + 1);
+        }
+        setRevertCount_X(revertCount_X - 1)
+      } else {
+        if (beforeSetPiece[3] === RED) {
+          countPieceRed_Y(pieceRed_Y + 1);
+        } else if (beforeSetPiece[3] === GREEN) {
+          countPieceGreen_Y(pieceGreen_Y + 1);
+        } else if (beforeSetPiece[3] === YELLOW) {
+          countPieceYellow_Y(pieceYellow_Y + 1);
+        }
+        setRevertCount_Y(revertCount_Y - 1)
+      }
+      // 一手前の保存値をnullに変更
+      setBeforeSetPiece(0, 0, null, null);
+      console.log(beforeSetPiece);
+      // 全ての駒の選択時CSSを削除
+      deleteClassNameToSelectedPiece();
+      // 戻したプレイヤーを保存
+      setRevertUser(player);
+      // プレイヤー交代
+      setCurrentPlayer(currentPlayer === playerX ? playerY : playerX);
     }
   }
 
@@ -314,8 +419,10 @@ function GameBoard() {
                 <h2>ゲーム説明</h2>
                 <p>2人対戦用のボードゲームです。</p>
                 <p>Playerは交互に<br />赤・緑・黄のいずれかの駒を<br />選択して盤面に配置します。</p>
+                <p>相手が駒を配置する前であれば<br />
+                  <img src={iconRevert} alt='iconRevert' className='img_piece_description'></img>で自分の配置した駒を<br />一手戻すことができます。</p>
                 <h2>勝利条件</h2>
-                <p>①<br />3目並べの要領で<br />同じ色の駒の3つ目を<br />置いた方の勝利です。</p>
+                <p>①<br />三目並べの要領で<br />同じ色の駒の3つ目を<br />置いた方の勝利です。</p>
                 <p>②<br />全ての駒を使い切った場合<br />後攻の勝利となります。</p>
                 <button onClick={handleCloseModal}>閉じる</button>
               </div>
@@ -328,38 +435,38 @@ function GameBoard() {
           <div className="player_name player-X">{playerX}</div>
           <div className="piece-color-count piece-color-count-left">
             <p className='piece-count'>{pieceRed_X}　</p>
-            <button className='btn_piece' onClick={(event) => {
+            <img src={RED} alt='RED' onClick={(event) => {
               // クリックされた要素にClassNameを追加
               if (currentPlayer === playerX) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
               onMyPieceClick(playerX, RED)
-            }}>
-              <img src={RED} alt='RED' className='img_piece'></img>
-            </button>
+            }}
+              className={(currentPlayer === playerX && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img>
           </div>
           <div className="green piece-color-count piece-color-count-left">
             <p className='piece-count'>{pieceGreen_X}　</p>
-            <button className='btn_piece' onClick={(event) => {
+            <img src={GREEN} alt='GREEN' onClick={(event) => {
               // クリックされた要素にClassNameを追加
               if (currentPlayer === playerX) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
               onMyPieceClick(playerX, GREEN)
-            }}>
-              <img src={GREEN} alt='GREEN' className='img_piece'></img>
-            </button>
+            }}
+              className={(currentPlayer === playerX && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img>
           </div>
           <div className="yellow piece-color-count piece-color-count-left">
             <p className='piece-count'>{pieceYellow_X}　</p>
-            <button className='btn_piece' onClick={(event) => {
+            <img src={YELLOW} alt='YELLOW' onClick={(event) => {
               // クリックされた要素にClassNameを追加
               if (currentPlayer === playerX) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
               onMyPieceClick(playerX, YELLOW)
-            }}>
-              <img src={YELLOW} alt='YELLOW' className='img_piece'></img>
-            </button>
+            }}
+              className={(currentPlayer === playerX && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img>
           </div>
-        </div>
+          <div className="revert piece-color-count piece-color-count-left">
+            <p className='piece-count'>{revertCount_X}　</p>
+            <img src={iconRevert} alt='iconRevert' className='img_piece' onClick={(event) => { if (winner === null) { handleClickRevert(playerX) } }}></img>
+          </div>        </div>
         <div className="game-board">
           {renderMessage()}
           {renderBoard()}
@@ -367,35 +474,38 @@ function GameBoard() {
         <div className="game-board">
           <div className="player_name player-Y">{playerY}</div>
           <div className="piece-color-count">
-            <button className='btn_piece' onClick={(event) => {
+            <img src={RED} alt='RED' onClick={(event) => {
               // クリックされた要素にClassNameを追加
               if (currentPlayer === playerY) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
               onMyPieceClick(playerY, RED);
-            }}><img src={RED} alt='RED' className='img_piece'></img></button>
+            }}
+              className={(currentPlayer === playerY && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img>
             <p className='piece-count'>　{pieceRed_Y}</p>
           </div>
           <div className="green piece-color-count">
-            <button className='btn_piece' onClick={(event) => {
+            <img src={GREEN} alt='GREEN' onClick={(event) => {
               // クリックされた要素にClassNameを追加
               if (currentPlayer === playerY) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
               onMyPieceClick(playerY, GREEN)
-            }}>
-              <img src={GREEN} alt='GREEN' className='img_piece'></img>
-            </button>
+            }}
+              className={(currentPlayer === playerY && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img>
             <p className='piece-count'>　{pieceGreen_Y}</p>
           </div>
           <div className="yellow piece-color-count">
-            <button className='btn_piece' onClick={(event) => {
+            <img src={YELLOW} alt='YELLOW' onClick={(event) => {
               // クリックされた要素にClassNameを追加
               if (currentPlayer === playerY) setClassNameToSelectedPiece(event);
               // 選択した駒を手元にセット
               onMyPieceClick(playerY, YELLOW)
-            }}>
-              <img src={YELLOW} alt='YELLOW' className='img_piece'></img>
-            </button>
+            }}
+              className={(currentPlayer === playerY && winner === null) ? 'img_piece img_piece_selected' : 'img_piece'}></img>
             <p className='piece-count'>　{pieceYellow_Y}</p>
+          </div>
+          <div className="revert piece-color-count">
+            <img src={iconRevert} alt='iconRevert' className='img_piece' onClick={(event) => { if (winner === null) { handleClickRevert(playerY) } }}></img>
+            <p className='piece-count'>　{revertCount_Y}</p>
           </div>
         </div>
       </div>

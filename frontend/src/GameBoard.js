@@ -301,6 +301,10 @@ function GameBoard() {
       setBoardState(newBoardState);
       setStartPieceCount();
       setCurrentPlayer('X');
+
+      setWinner(null);
+      setCurrentPlayer(playerX);
+  
     }
   }
 
